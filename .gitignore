@@ -1,0 +1,5 @@
+build/*
+dist/*
+lda2vec.egg-info/*
+lda2vec/__pycache__/*
+

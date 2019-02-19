@@ -92,7 +92,7 @@ def prepare_topics(weights, factors, word_vectors, vocab, temperature=1.0,
 def run_preprocessing(texts, data_dir, run_name, min_freq_threshold=10,
                       max_length=100, bad=[], vectors="en_core_web_lg",
                       num_threads=2, token_type="lemma", only_keep_alpha=False,
-                      write_every=10000, merge=False):
+                      write_every=10000):
     """This function abstracts the rest of the preprocessing needed
     to run Lda2Vec in conjunction with the NlpPipeline
 
@@ -120,8 +120,6 @@ def run_preprocessing(texts, data_dir, run_name, min_freq_threshold=10,
         Only keep alpha characters
     write_every : int, optional
         Number of documents' data to store before writing cache to skipgrams file
-    merge : bool, optional
-        Merge noun phrases or not
     """
 
     def clean(line):
@@ -146,7 +144,7 @@ def run_preprocessing(texts, data_dir, run_name, min_freq_threshold=10,
         # Process the text, no file because we are passing in data directly
         SP = NlpPipeline(None, max_length, texts=texts,
                          num_threads=num_threads, only_keep_alpha=only_keep_alpha,
-                         token_type=token_type, vectors=vectors, merge=merge)
+                         token_type=token_type, vectors=vectors)
 
         # Computes the embed matrix along with other variables
         SP._compute_embed_matrix()

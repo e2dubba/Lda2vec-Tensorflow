@@ -7,7 +7,7 @@ from gensim.models.doc2vec import TaggedDocument
 from gensim.models import Doc2Vec
 import tensorflow as tf
 import os
-from sense2vec import Sense2VecComponent
+#from sense2vec import Sense2VecComponent
 
 import sys
 import time
@@ -25,7 +25,7 @@ class NlpPipeline:
 
     def __init__(self, textfile, max_length, context=False, sep="\t", usecols=None, tokenize_sentences=False,
                  num_sentences=4, gn_path=None, use_google_news=False,
-                 nlp=None, nlp_object_path=None, vectors=None, skip="<SKIP>", merge=False, num_threads=2,
+                 nlp=None, nlp_object_path=None, vectors=None, skip="<SKIP>", num_threads=2,
                  delete_punctuation=False,
                  token_type="lower", skip_oov=False, save_tokenized_text_data=False, bad_deps=("amod", "compound"),
                  texts=None, only_keep_alpha=False):
@@ -48,7 +48,6 @@ class NlpPipeline:
             nlp_object_path (None, optional): When passed, it will load the nlp object found in this path
             vectors (None, optional): Description
             skip (str, optional): Short documents will be padded with this variable up until max_length
-            merge (bool, optional): When True, we will merge noun phrases and named entities into single tokens
             num_threads (int, optional): Number of threads to parallelize the pipeline
             delete_punctuation (bool, optional): When set to true, punctuation will be deleted when tokenizing
             token_type (str, optional): String denoting type of token for tokenization. Options are "lower", "lemma", and "orth"
@@ -67,7 +66,7 @@ class NlpPipeline:
         self.usecols = usecols
         self.skip = skip
         self.nlp = nlp
-        self.merge = merge
+        #self.merge = merge
         self.num_threads = num_threads
         self.delete_punctuation = delete_punctuation
         self.token_type = token_type
@@ -175,11 +174,13 @@ class NlpPipeline:
             self.sentence_tokenize()
             return
 
+        '''
         # If we want to merge phrases, we add s2v component
         # to our pipe and it will do it for us.
         if self.merge:
             s2v = Sense2VecComponent('reddit_vectors-1.1.0')
             self.nlp.add_pipe(s2v)
+        '''
 
         for row, doc in enumerate(self.nlp.pipe(self.texts, n_threads=self.num_threads, batch_size=10000)):
             try:
@@ -291,6 +292,7 @@ class NlpPipeline:
                     if sent_idx >= self.num_sentences:
                         continue
                     try:
+                        '''
                         if self.merge:
                             # Make list to hold merged phrases. Necessary to avoid buggy spacy merge implementation
                             phrase_list = []
@@ -324,6 +326,7 @@ class NlpPipeline:
                                               lemma='_'.join([token.text for token in _ent]),
                                               ent_type=_ent[0].ent_type_)
                         # Create temp list for holding doc text
+                        '''
                         if self.save_tokenized_text_data:
                             doc_text = []
 
